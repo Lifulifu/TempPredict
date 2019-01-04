@@ -1,6 +1,6 @@
 # TempPredict
 Predict temperature per hour using NN and Xgboost
-\\\python
+```python
 def ass():
   ass
-\\\
+```
