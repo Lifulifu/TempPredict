@@ -32,10 +32,15 @@ to return date and time been normalized by 0~1, date is divided by 366, time is 
 ## 4. Models
 In `nn/`, each .py file defines a model:
 * **CNNmodel:** Basic CNN with no pooling.
+
 * **CNNsep:** Contains two experimental models: sepCNN() and concatInputCNN()
+
 * **CNNwithMonth:** Temperature data pass through Conv layers, then concat with circularly encoded month feature
+
 * **LSTMmodel:** Just a simple LSTM model
+
 * **TrivialModel:** This model just outputs the last x value. Just for comparison with other models.
+
 * **World** and **ModelGenerator:** Just for fun. Randomly generates models and evolve each generation.
 
 Models are defined in functions. Once the function is called, it immediately starts to fit. Note that, after training is done, some return the trained model, but some only return loss history of the model. This is because some uses **ModelCheckpoint** and **EarlyStopping** to save the best model to `nn/models/`, preventing from getting overfit models. In this case, use `load_model(path)` to get the trained model.
