@@ -10,10 +10,19 @@ crawl((1010, 1, 1), (2018, 12, 31))
 ```
 
 ## 3. Processing Data
-Data preprocessing helper function are in `nn/data/dataGen.py`. For instance:
+Data preprocessing helper functions are in `nn/data/dataGen.py`. For instance:
 ```python
 x, y = genXY(path, feature, inputDim, nDaysAfter)
 ```
 reads the csv file you crawed and returns numpy arrays that can be directly used for model input and output, where `path` is the path of the csv, `inputDim` specifies how many hours of temperature you want to input, and `nDaysAfter` specifies that y should be the temperature n days after the latest input hour.
 
-Other functions are used for different input format, depending on which model you want to use. For instance `genXYwithMon()` gives you not only temperature input, but also encoded month feature.
+Other functions are used for different input format, depending on which model you want to use. For instance `genXYwithMon()` gives you not only temperature input, but also month feature.
+
+## 4. Models
+In the `nn/` folder, each .py file defines a model:
+* **CNNmodel:** Basic CNN with no pooling.
+* **CNNsep:** Contains two experimental models: sepCNN() and concatInputCNN()
+* **CNNwithMonth:** Temperature data pass through Conv layers, then concat with circularly encoded month feature
+* **LSTMmodel:** Just a simple LSTM model
+* **TrivialModel:** This model just outputs the last x value. Just for comparison.
+* **World** and **ModelGenerator:** Just for fun. Randomly generates models and evolve each generation.
