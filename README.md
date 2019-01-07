@@ -57,8 +57,14 @@ For xgb, in `xgboost/`:
 	to tune parameters with raw feature or normalized
 * **tuning_PCA.py**
 	to tune parameters with PCAed feature
+
+## 5. Results
+We use mean-absolute-error as a metric to evaluate goodness of a model. At first we used only one year data for training, and about 4 months for testing.
   
-  ## 5. Results
+  
+  
+  
+  
   
   
   
