@@ -43,24 +43,39 @@ In `nn/`, each .py file defines a model:
 
 * **World** and **ModelGenerator:** Just for fun. Randomly generates models and evolve each generation.
 
+|**CNNsep** (seperate each type of feature)|**CNNwithMonth**|
+|-------|---------|
+|![](./img/sepCNN.PNG)|![](./img/CNNwithMon.PNG)|
+
 Models are defined in functions. Once the function is called, it immediately starts to fit. Note that, after training is done, some return the trained model, but some only return loss history of the model. This is because some uses **ModelCheckpoint** and **EarlyStopping** to save the best model to `nn/models/`, preventing from getting overfit models. In this case, use `load_model(path)` to get the trained model.
 
 For xgb, in `xgboost/`:
-* **train.py**
-	to train model.
-	the feature may be raw or been normalized
-* **train_cross.py**
-	to do cross validation and testing for each year
-* **train_PCA.py**
-	the feature been PCAed
-* **tuning.py**
-	to tune parameters with raw feature or normalized
-* **tuning_PCA.py**
-	to tune parameters with PCAed feature
+* **train.py** to train model. The feature may be raw or been normalized
+	
+* **train_cross.py** to do cross validation and testing for each year
+	
+* **train_PCA.py** the feature been PCAed
+
+* **tuning.py** to tune parameters with raw feature or normalized
+
+* **tuning_PCA.py** to tune parameters with PCAed feature
 
 ## 5. Results
-We use mean-absolute-error as a metric to evaluate goodness of a model. At first we used only one year data for training, and about 4 months for testing.
-  
+We use mean-absolute-error (unit: degree celcius) as a metric to evaluate goodness of a model. Let's see how well they perfrom:
+
+|Model|mae|
+|---|---|
+|**TrivialModel**|1.92|
+|**CNN**|1.398|
+|**CNNwithMonth**|1.35|
+|**CNNsep**|1.444|
+|**LSTM**|1.414|
+
+We tried feeding additional weather feature to improve accuracy, such as pressure and humidity (CNNsep). But turns out past temperature is still the most dominent feature. However, we found that adding month as feature slightly improved our result (CNNwithMonth).
+
+Also, we found that our model performs particularly bad between winter and spring. As the plot below shows, error in the first few months are relatively high.    
+
+![](/img/bigerror.PNG)
   
   
   
