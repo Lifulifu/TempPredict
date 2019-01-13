@@ -32,7 +32,7 @@ In `nn/`, each .py file defines a model. Models are defined in functions, once t
 ```python
 CNNmodel(xtrain, ytrain)
 ```
-Once called, the model immediately starts to fit. Each model may have different shapes of `xtrain`.
+Once called, the model immediately starts to fit. Each model may have different shapes of `xtrain`. Example usage are already written in each .py file.
 
 Note that, after training is done, it only returns loss history of the model. This is because we use **ModelCheckpoint** and **EarlyStopping** to save the best model to `nn/models/`, preventing from getting overfit models. Use `m = load_model(path)` to get the trained model.
 
@@ -78,7 +78,7 @@ We use mean-absolute-error (unit: degrees celcius) as a metric to evaluate goodn
 |**CNNsepFeature**|1.444|
 |**LSTM**|1.414|
 
-We tried feeding additional weather feature to improve accuracy, such as pressure and humidity (CNNsep). But turns out past temperature is still the most dominent feature. However, we found that adding month as feature slightly improved our result (CNNwithMonth).
+We tried feeding additional weather feature to improve accuracy, such as pressure and humidity (CNNsep). But turns out past temperature is still the most dominent feature. However, we found that adding month as a feature slightly improved our result (CNNwithMonth).
 
 Also, we found that our model performs particularly bad between winter and spring. As the plot below shows, error in the first few months are relatively high.    
 
