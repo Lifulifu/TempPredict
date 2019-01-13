@@ -28,24 +28,31 @@ to return date and time been normalized by 0~1, date is divided by 366, time is 
 
 
 ## 4. Models
-In `nn/`, each .py file defines a model:
-* **CNNmodel:** Basic CNN with no pooling.
+In `nn/`, each .py file defines a model. Models are defined in functions, once the function is called, for example:
+```python
+CNNmodel(xtrain, ytrain)
+```
+Once called, the model immediately starts to fit. Each model may have different shapes of `xtrain`.
 
-* **CNNsep:** Contains two experimental models: sepCNN() and concatInputCNN()
+Note that, after training is done, it only returns loss history of the model. This is because we use **ModelCheckpoint** and **EarlyStopping** to save the best model to `nn/models/`, preventing from getting overfit models. Use `m = load_model(path)` to get the trained model.
 
-* **CNNwithMonth:** Temperature data pass through Conv layers, then concat with circularly encoded month feature
+* **CNNmodel:** Basic CNN with no pooling. Inputs only `Temperature` as feature
 
-* **LSTMmodel:** Just a simple LSTM model
+* **CNNmodel_v2:** CNN that inputs 3 features: `Temperature`, `Td dew point` and `StnPres`
+
+* **CNNconcatFeature:** Inputs the 3 features above, but concatenated
+
+* **CNNsepFeature:** Inputs 3 features into 3 seperated CNN, then concat them in dense layer. As shown in figure (a)
+
+* **CNNwithMonth:** Inputs only `Temperature`, after passing through Conv layers, concatenate with circularly encoded month feature. As shown in figure (b)
+
+* **LSTMmodel:** Just a simple LSTM model. Inputs only `Temperature`
 
 * **TrivialModel:** This model just outputs the last x value. Just for comparison with other models.
 
-* **World** and **ModelGenerator:** Just for fun. Randomly generates models and evolve each generation.
-
-|**CNNsep** (seperate each type of feature)|**CNNwithMonth**|
+|**(a)CNNsepFeature**|**(b)CNNwithMonth**|
 |-------|---------|
 |![](./img/sepCNN.PNG)|![](./img/CNNwithMon.PNG)|
-
-Models are defined in functions. Once the function is called, it immediately starts to fit. Note that, after training is done, some return the trained model, but some only return loss history of the model. This is because some uses **ModelCheckpoint** and **EarlyStopping** to save the best model to `nn/models/`, preventing from getting overfit models. In this case, use `load_model(path)` to get the trained model.
 
 For xgb, in `xgboost/`:
 * **train.py** to train model. The feature may be raw or been normalized
@@ -59,14 +66,16 @@ For xgb, in `xgboost/`:
 * **tuning_PCA.py** to tune parameters with PCAed feature
 
 ## 5. Results
-We use mean-absolute-error (unit: degree celcius) as a metric to evaluate goodness of a model. Let's see how well they perfrom:
+We use mean-absolute-error (unit: degrees celcius) as a metric to evaluate goodness of a model. Let's see how well they perfrom:
 
 |Model|mae|
 |---|---|
 |**TrivialModel**|1.92|
-|**CNN**|1.398|
+|**CNNmodel**|1.398|
+|**CNNmodel_v2**|1.402|
 |**CNNwithMonth**|1.35|
-|**CNNsep**|1.444|
+|**CNNconcatFeature**|1.399|
+|**CNNsepFeature**|1.444|
 |**LSTM**|1.414|
 
 We tried feeding additional weather feature to improve accuracy, such as pressure and humidity (CNNsep). But turns out past temperature is still the most dominent feature. However, we found that adding month as feature slightly improved our result (CNNwithMonth).
