@@ -3,20 +3,18 @@
 ## 1. Objective
 We wish to predict future temperature (every hour) using past weather data.
 
-## 2. Getting Data
-We crawled our training data from [CWB Observation Data Inquire System](https://e-service.cwb.gov.tw/HistoryDataQuery/index.jsp?fbclid=IwAR03ffdzMn6oSFDsNSeT34qiOHi5ut4rmW3rIriom7PJGXeFaSqE5I9MyZg). Crawler is at `nn/data/crawler.py`, just call `crawl()` to get csv file of hour-wise weather data given date interval. For instance:
+## 2. Crawl Data
+We crawled our training data from [CWB Observation Data Inquire System](https://e-service.cwb.gov.tw/HistoryDataQuery/index.jsp?fbclid=IwAR03ffdzMn6oSFDsNSeT34qiOHi5ut4rmW3rIriom7PJGXeFaSqE5I9MyZg). Crawler is at `nn/data/getdata.py`, just call `crawl(startDate, endDate, path)` to get csv file of hour-wise weather data given date interval. For instance:
 ```python
-crawl((2010, 1, 1), (2018, 12, 31))
+crawlCSV((2010, 1, 1), (2018, 12, 31), 'raw.csv')
 ```
 
-## 3. Processing Data
-Data preprocessing for NN are in `nn/data/dataGen.py`. For instance:
+## 3. Process Data
+Now that we have our raw csv data, we can call `getXY(path, inputDays, hrsAfter, features)` in `nn/data/getdata.py` to get numpy arrays that can be directly used for model input and output, where `path` is the csv file you wish to read in, `inputDays` specifies how many hours you want to input, `hrsAfter` specifies how many hours later you wish to predict after the last input hour, and `features` is an array that tells the features to input in one hour. For instance:
 ```python
-x, y = genXY(path, feature, inputDim, nDaysAfter)
+x, y = getXY('data/raw.csv', inputHrs=72, hrsAfter=24, features=['Temperature','StnPres'])
 ```
-reads the csv file you crawled and returns numpy arrays that can be directly used for model input and output, where `path` is the path of the csv, `inputDim` specifies how many hours of temperature you want to input, and `nDaysAfter` specifies that y should be the temperature n days after the last input hour.
-
-Other functions are used for different input format, depending on which model you want to use. For instance `genXYwithMon()` gives you not only temperature input, but also month feature.
+returns numpy arrays `x, y` with shape `(N, 72, 2), (N, )`, where `N` is the amount of your data.
 
 For Xgb, data preprocessing is in `xgboost/get_data.py`. Use
 ```python
